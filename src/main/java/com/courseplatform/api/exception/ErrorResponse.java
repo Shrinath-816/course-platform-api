@@ -18,6 +18,9 @@ public class ErrorResponse {
         this.path = path;
     }
 
+
+
+
     public Instant getTimestamp() {
         return timestamp;
     }

@@ -25,6 +25,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String secret;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-ui.html");
+    }
+
+    @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -42,14 +50,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            String email = claims.getSubject();
-
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
-                            email, null, Collections.emptyList());
-
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request));
+                            claims.getSubject(),
+                            null,
+                            Collections.emptyList()
+                    );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
