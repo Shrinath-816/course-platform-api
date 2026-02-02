@@ -52,22 +52,13 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request
     ) {
-        String path = request.getRequestURI();
-
-        // Let Swagger handle its own internal errors
-        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
-            throw new RuntimeException(ex);
-        }
-
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_SERVER_ERROR",
                 ex.getMessage(),
-                path
+                request.getRequestURI()
         );
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
+
