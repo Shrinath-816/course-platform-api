@@ -12,31 +12,26 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
+@Order(1)
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Order(1)
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
-                .securityMatcher("/**")
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .dispatcherTypeMatchers(
-                                DispatcherType.ERROR,
-                                DispatcherType.FORWARD
-                        ).permitAll()
                         .requestMatchers(
-                                "/swagger-ui.html",
                                 "/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/api/auth/**"
                         ).permitAll()
@@ -47,3 +42,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

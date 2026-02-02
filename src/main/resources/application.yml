@@ -1,8 +1,13 @@
+
+server:
+  port: ${PORT:8080}
+
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DATABASE_URL}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -11,7 +16,5 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400
-
-
 
 
