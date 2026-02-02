@@ -12,68 +12,62 @@ import java.time.Instant;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @RestControllerAdvice
-    public class GlobalExceptionHandler {
-
-        @ExceptionHandler(ResourceNotFoundException.class)
-        public ResponseEntity<ErrorResponse> handleNotFound(
-                ResourceNotFoundException ex,
-                HttpServletRequest request
-        ) {
-            ErrorResponse response = new ErrorResponse(
-                    HttpStatus.NOT_FOUND.value(),
-                    "NOT_FOUND",
-                    ex.getMessage(),
-                    request.getRequestURI()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        public ResponseEntity<ErrorResponse> handleValidation(
-                MethodArgumentNotValidException ex,
-                HttpServletRequest request
-        ) {
-            String message = ex.getBindingResult()
-                    .getFieldErrors()
-                    .stream()
-                    .findFirst()
-                    .map(err -> err.getField() + " " + err.getDefaultMessage())
-                    .orElse("Validation failed");
-
-            ErrorResponse response = new ErrorResponse(
-                    HttpStatus.BAD_REQUEST.value(),
-                    "VALIDATION_ERROR",
-                    message,
-                    request.getRequestURI()
-            );
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        @ExceptionHandler(Exception.class)
-        public ResponseEntity<ErrorResponse> handleGenericException(
-                Exception ex,
-                HttpServletRequest request
-        ) {
-            String path = request.getRequestURI();
-
-            // Let Swagger handle its own internal errors
-            if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
-                throw new RuntimeException(ex);
-            }
-
-            ErrorResponse response = new ErrorResponse(
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "INTERNAL_SERVER_ERROR",
-                    ex.getMessage(),
-                    path
-            );
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(response);
-        }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(
+            ResourceNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "NOT_FOUND",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-}
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(err -> err.getField() + " " + err.getDefaultMessage())
+                .orElse("Validation failed");
 
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "VALIDATION_ERROR",
+                message,
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        String path = request.getRequestURI();
+
+        // Let Swagger handle its own internal errors
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            throw new RuntimeException(ex);
+        }
+
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "INTERNAL_SERVER_ERROR",
+                ex.getMessage(),
+                path
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
+}
