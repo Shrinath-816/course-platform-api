@@ -18,24 +18,10 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI()
-                //  JWT Security
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .components(new Components()
-                        .addSecuritySchemes("bearerAuth",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")
-                        )
-                )
-                //  Force HTTPS (Railway)
-                .addServersItem(new Server()
-                        .url("https://course-platform-api-production-f001.up.railway.app")
-                        .description("Production (Railway)")
-                );
+        return new OpenAPI();
     }
 }
+
 
 
 
